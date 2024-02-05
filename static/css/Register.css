@@ -1,0 +1,218 @@
+body{
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+
+}
+.image-container{
+  text-align: center;
+}
+img {
+  background: linear-gradient(rgb(7, 1, 88), rgb(13, 153, 241));
+  border-radius: 60px 60px;
+  width: 300px; /* Adjust the width as needed */
+  height: 200px; /* Adjust the height as needed */
+  object-fit: cover;
+  display: inline-block;
+}
+img:hover{
+  box-shadow: 0 0 30px 10px rgba(13, 153, 241, 0.9); /* Adjust the color and other parameters for the hover effect */
+
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 50vw;
+  padding: 20px;
+  border-radius: 20px;
+  position: relative;
+  background-color: #1a1a1a;
+  color: #fff;
+  border: 1px solid black;
+  border-color: -internal-light-dark(rgb(255, 8, 8), rgb(133, 133, 133));
+  box-shadow: 
+  0 5px 15px 1px #0b1515,
+  0 1px 15px 1px #18bacd,
+  0 1px 15px 1px #2154d3;
+}
+
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+  color: #00bfff;
+}
+
+.title::before {
+  width: 18px;
+  height: 18px;
+}
+
+.title::after {
+  width: 18px;
+  height: 18px;
+  animation: pulse 1s linear infinite;
+}
+
+.title::before,
+.title::after {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  left: 0px;
+  background: radial-gradient(#15030d, #0272a5, #f6f7f7);
+}
+
+.message, 
+.signin {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.signin {
+  text-align: center;
+}
+
+.signin a:hover {
+  text-decoration: underline royalblue;
+}
+
+.signin a {
+  color: #00bfff;
+}
+
+.flex {
+  display: flex;
+ 
+  gap: 9px;
+}
+
+.form label {
+  position: relative;
+  width: 100%;
+}
+
+.form label .input {
+  background-color: #333;
+  color: #fff;
+  width: 100%;
+  height: 30px;
+  padding: 20px 05px 05px 10px;
+  outline: 0;
+  border: 1px solid rgba(105, 105, 105, 0.397);
+  border-radius: 10px;
+}
+
+.form label .input + span {
+  color: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  left: 14px;
+  top: -4px;
+  font-size: 0.9em;
+  cursor: text;
+  transition: 0.3s ease;
+}
+
+.form label .input:placeholder-shown + span {
+  top: 19.5px;
+  font-size: 1.2em;
+}
+
+.form label .input:focus + span,
+.form label .input:valid + span {
+  color: #00bfff;
+  top: 0px;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.input {
+  font-size: medium;
+}
+
+
+
+@keyframes pulse {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+.signin-container{
+  text-align: center;
+  padding-top: 10px;
+}
+#sign {
+    text-decoration: none;
+    position: relative;
+    border: none;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    color: #fff;
+    width: 80px;
+    height: 40px;
+    line-height: 2em;
+    text-align: center;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+    background-size: 300%;
+    border-radius: 30px;
+    z-index: 1;
+    
+  
+  }
+  
+  #sign:hover {
+    animation: ani 5s linear infinite;
+    border: none;
+  }
+  
+  @keyframes ani {
+    0% {
+        background-position: 0%;
+    }
+  
+    100% {
+        background-position: 500%;
+    }
+  }
+  
+  #sign:before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: -1;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4, #ffeb3b);
+    background-size: 1000%;
+    border-radius: 35px;
+    transition: 1s;
+  }
+  
+  #sign:hover::before {
+    filter: blur(310px);
+  }
+  
+  #sign:active {
+    background: linear-gradient(32deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+  }
+ 
+

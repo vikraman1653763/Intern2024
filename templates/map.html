@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_details.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>User Details</h1>
+        <div class="user-details">
+            <div class="detail">
+                <label>Username:</label>
+                <span>{{ user.username }}</span>
+            </div>
+            <div class="detail">
+                <label>Lastname:</label>
+                <span>{{ user.lastname }}</span>
+            </div>
+            <div class="detail">
+                <label>Email:</label>
+                <span>{{ user.email }}</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -32,7 +32,7 @@
     
         <div class=" flex input-control">
             <label>
-                <input id="lastname" class="input" type="text" placeholder="" required="" autocomplete="username">
+                <input id="lastname" class="input" type="text" placeholder="" required="" autocomplete="lastname">
                 <span>Lastname</span>
             </label>
             
@@ -66,12 +66,13 @@
     </div>
     
 
-        <p class="signin">Already have an account? <a href="#">Sign in</a> </p>
-   
+    {% if action == 'register' %}
+    <p class="signin">Already have an account? <a href="{{ url_for('login') }}">Sign in</a> </p>
+    {% endif %}
        
         
 </form>
-<script src="{{ url_for('static', filename='js/form2s.js') }}"></script>
+<script src="{{ url_for('static', filename='js/form.js') }}"></script>
 <script src="{{ url_for('static', filename='js/otp.js') }}"></script>
 </body>
 

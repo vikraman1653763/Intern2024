@@ -3,28 +3,33 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123@localhost/nevar'
-app.config['SECRET_KEY'] = 'your_secret_key'  # Replace with a secure secret key
+app.config['SECRET_KEY'] = 'secret_key' 
 db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False)
-    lastname = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
-    otp = db.Column(db.String(6), nullable=True)
+    username = db.Column(db.String(80), nullable=True)
+    lastname = db.Column(db.String(80), nullable=True)
+    email = db.Column(db.String(120), unique=False, nullable=True)
+    password = db.Column(db.String(80), nullable=True)
+@app.route('/favicon.ico')
+def favicon():
+    return '', 404
+
 
 @app.route('/')
 def register_page():
-    return render_template('register.html')
+    action='register'
+    return render_template('register.html',action=action)
 
 @app.route('/success.html')
-def otp_page():
+def success_page():
     return render_template('success.html')
 
 @app.route('/submit_form', methods=['POST'])
 def submit_form():
     try:
+        print('forrrrrm',request.form)  # Print form data for debugging
         username = request.form['username']
         lastname = request.form['lastname']
         email = request.form['email']
@@ -44,20 +49,16 @@ def submit_form():
 @app.route('/verify_otp', methods=['POST'])
 def verify_otp():
     try:
-        # Retrieve user details from the session
-        username = session.get('username')
-        lastname = session.get('lastname')
-        email = session.get('email')
-        password = session.get('password')
-
-        # Clear session data
-        session.pop('username', None)
-        session.pop('lastname', None)
-        session.pop('email', None)
-        session.pop('password', None)
-
+        # Retrieve user details from the request
+        data = request.get_json()
+        username = data.get('username')
+        lastname = data.get('lastname')
+        email = data.get('email')
+        password = data.get('password')
+        print("received data",data)
         # Save user details to the database
         new_user = User(username=username, lastname=lastname, email=email, password=password)
+        print("user data",new_user)
         db.session.add(new_user)
         db.session.commit()
 
@@ -65,7 +66,49 @@ def verify_otp():
     except Exception as e:
         print(e)
         return jsonify({'success': False, 'error': 'Error saving user details'})
+@app.route('/login')
+def login():
+    # Pass a variable to indicate the current action (logging in)
+    action = 'login'
+    return render_template('login.html', action=action)
+    
+@app.route('/login_check', methods=['POST'])
+def login_check():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
 
+        # Check if the email and password match any user in the database
+        user = User.query.filter_by(email=email, password=password).first()
+        if user:
+            # Return user details including the ID
+            return jsonify({'success': True, 'user': {
+                'id': user.id,
+                'username': user.username,
+                'lastname': user.lastname,
+                'email': user.email
+            }})
+        else:
+            return jsonify({'success': False, 'error': 'Invalid email or password'})
+    except Exception as e:
+        print(e)
+        return jsonify({'success': False, 'error': 'Error checking email and password'})
+
+@app.route('/map')
+def map():
+    try:
+        user_id = request.args.get('id')
+        user = User.query.get(user_id)
+        if user:
+            return render_template('map.html', user=user)
+        else:
+            return 'No user found with the provided ID'
+    except Exception as e:
+        print(e)
+        return 'Error fetching user details from the database'
+
+    
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True)

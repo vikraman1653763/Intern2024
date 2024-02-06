@@ -1,3 +1,96 @@
+//otp.js//
+function sendOTP() {
+    const { isValid, emailValue,usernameValue } = validateInputs();
+    
+    if (!isValid) {
+        return;
+    }
+
+    const otpValue = Math.floor(Math.random() * 1000000); // Generate and set OTP value
+
+    let emailbody = `
+        <h2>Your OTP is </h2><h1>${otpValue}</h1>
+    `;
+
+    // Store OTP value in localStorage
+    localStorage.setItem('otpValue', otpValue);
+
+    Email.send({
+        SecureToken: "5fcffd7d-0f66-480e-9fcc-bddfcee79d28",
+        To: emailValue,
+        From: "vikraman1653763@gmail.com",
+        Subject: "this is one time password. please dont share it with others.",
+        Body: emailbody
+    }).then(
+        message => {
+            if (message === "OK") {
+                alert("OTP sent to your email " + emailValue);
+                window.location.href = 'success.html';
+            }
+        }
+    ).catch(error => {
+        console.error("Error sending email:", error);
+        alert("Error sending OTP email. Please try again.");
+    });
+}
+
+const otpValue = localStorage.getItem('otpValue');
+
+function sendUserData(emailValue) {
+    // Send user data to Flask for saving
+    fetch('/verify_otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: usernameValue,
+            lastname: sessionStorage.getItem('lastname'),
+            email: emailValue,
+            password: sessionStorage.getItem('password'),
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // Optionally, redirect to a success page
+            window.location.href = 'success.html';
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error sending user data:', error);
+        alert('Error sending user data. Please try again.');
+    });
+}
+
+
+function verifyOTP() {
+    const otpInput = document.getElementById('otp_inp');
+    
+    if (otpInput) {
+        // Now check whether the entered OTP is valid
+        if (otpInput.value == localStorage.getItem('otpValue')) {
+            // Optional alert or other actions
+            localStorage.removeItem('otpValue');
+            const emailValue = localStorage.getItem('email');
+            const usernameValue = localStorage.getItem('username');
+            const lastnameValue = localStorage.getItem('lastname');
+            const passwordValue = localStorage.getItem('password');
+            console.log('email:', emailValue, usernameValue, lastnameValue, passwordValue);
+            alert('savedd'); 
+            // Call sendUserData with user details
+            sendUserData(emailValue, usernameValue, lastnameValue, passwordValue);
+        } else {
+            alert("Invalid OTP");
+        }
+    } else {
+        console.error("Error: Could not find element with id 'otp_inp'");
+    }
+}
+//form.js
 const form = document.getElementById('form');
 const username = document.getElementById('username');
 const lastname = document.getElementById('lastname');
@@ -12,8 +105,9 @@ const signUpButton = document.getElementById('sign');
 form.addEventListener('submit', e => {
     e.preventDefault();
 
-    const isValid = validateInputs();
+    const { isValid} = validateInputs();
     if (isValid && !otpSent) {
+     
         sendOTP();
         otpSent = true;
     }
@@ -42,21 +136,7 @@ const setSuccess = element => {
     }
 };
 
-const showCustomAlert = message => {
-    const customAlert = document.getElementById('customAlert');
-    const customAlertMessage = document.getElementById('customAlertMessage');
 
-    customAlertMessage.innerText = message;
-    customAlert.style.display = 'flex';
-
-    const closeButton = document.getElementById('customAlertCloseButton');
-    closeButton.addEventListener('click', hideCustomAlert);
-};
-
-const hideCustomAlert = () => {
-    const customAlert = document.getElementById('customAlert');
-    customAlert.style.display = 'none';
-};
 
 const isValidEmail = email => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -80,6 +160,7 @@ const validateInputs = () => {
         isValid = false;
     } else {
         setSuccess(username);
+        localStorage.setItem('username', usernameValue);
     }
 
     if (lastnameValue === '') {
@@ -90,6 +171,8 @@ const validateInputs = () => {
         isValid = false;
     } else {
         setSuccess(lastname);
+        localStorage.setItem('lastname',lastnameValue);
+
     }
 
     if (emailValue === '') {
@@ -106,6 +189,7 @@ const validateInputs = () => {
         isValid = false;
     } else {
         setSuccess(email);
+        localStorage.setItem('email',emailValue);
     }
 
     if (passwordValue === '') {
@@ -114,7 +198,7 @@ const validateInputs = () => {
             firstErrorMessage = 'Password is required';
         }
         isValid = false;
-    } else if (passwordValue.length < 8) {
+    } else if (passwordValue.length < 1) {
         setError(password, 'Password must be at least 8 characters.');
         if (!firstErrorMessage) {
             firstErrorMessage = 'Password must be at least 8 characters';
@@ -138,26 +222,18 @@ const validateInputs = () => {
         isValid = false;
     } else {
         setSuccess(password2);
+        localStorage.setItem('password', password2Value);
     }
 
     if (!isValid && firstErrorMessage) {
         alert(firstErrorMessage);
     }
-
-    return isValid;
+    
+    return { isValid, emailValue };
 };
-// ... (your existing code)
 
-function sendUserData() {
-    const { isValid, emailValue } = validateInputs();
 
-    if (!isValid) {
-        return;
-    }
-
-    // Assuming otpValue is already stored in localStorage
-    const otpValue = localStorage.getItem('otpValue');
-
+function sendUserData(emailValue, usernameValue, lastnameValue, passwordValue) {
     // Send user data to Flask for saving
     fetch('/verify_otp', {
         method: 'POST',
@@ -165,43 +241,24 @@ function sendUserData() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            username: username.value,
-            lastname: lastname.value,
+            username: usernameValue,
+            lastname: lastnameValue,
             email: emailValue,
-            password: password.value,
-            otp: otpValue,
+            password: passwordValue,
         }),
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                // Optionally, redirect to a success page
-                window.location.href = 'success.html';
-            } else {
-                alert(data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error sending user data:', error);
-            alert('Error sending user data');
-        });
-}
-
-function verifyOTP() {
-    const otpInput = document.getElementById('otp_inp');
-
-    if (otpInput) {
-        // Now check whether the entered OTP is valid
-        if (otpInput.value == otpValue) {
-            sendUserData(); 
-            console.log(username.value);
-            alert('saveddddddddddddd');// Send user data to Flask after OTP verification
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // Optionally, redirect to a success page
+            window.location.href = 'success.html';
         } else {
-            alert('Invalid OTP');
+            alert(data.error);
         }
-    } else {
-        console.error("Error: Could not find element with id 'otp_inp'");
-    }
+    })
+    .catch(error => {
+        console.error('Error sending user data:', error);
+        alert('Error sending user data. Please try again.');
+    });
 }
-

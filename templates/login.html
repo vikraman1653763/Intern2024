@@ -1,0 +1,81 @@
+<!--login.html-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Register.css') }}">
+    <title>Welcome</title>
+</head>
+
+<body>
+    
+    <form class="form" id="form">
+        <div class="image-container">
+            <img src="static\images\nevar-systems-black3.png">
+        </div>
+        <p class="title">Welcome</p>
+        
+        <div class="flex input-control">
+            <label>
+                <input id="email" class="input" type="email" placeholder="" required="" autocomplete="email">
+                <span>Email</span>
+            </label>
+        </div>
+    
+        <div class="flex input-control">
+            <label>
+                <input id="password" class="input" type="password" placeholder="" required="" autocomplete="password1">
+                <span>Password</span>
+            </label>
+        </div>
+    
+        <div class="signin-container">
+            <button id="sign" type="button" onclick="checkEmail()">Log in</button>
+        </div>
+    
+        {% if action == 'login' %}
+        <p class="signin">New account? <a href="{{ url_for('register_page') }}">Sign up</a></p>
+        {% endif %}
+    </form>
+
+    <script>
+        function checkEmail() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+    
+            fetch('/login_check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to the user details page with the user's ID as a parameter
+                    window.location.href = '/map?id=' + data.user.id;
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking email and password:', error);
+                alert('Error checking email and password. Please try again.');
+            });
+        }
+    </script>
+    
+
+</body>
+
+</html>

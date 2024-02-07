@@ -63,7 +63,7 @@
             .then(data => {
                 if (data.success) {
                     // Redirect to the user details page with the user's ID as a parameter
-                    window.location.href = '/map?id=' + data.user.id;
+                    window.location.href = '/folder/' + data.user.id;
                 } else {
                     alert(data.error);
                 }

@@ -3,21 +3,25 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 50px;
+  padding-top: 20%;
 
 }
 .image-container{
   text-align: center;
   width: auto;
   height: auto;
+  display: flex;
+  position:static;
+  align-self: center;
+
 }
 img {
   background: linear-gradient(rgb(7, 1, 88), rgb(13, 153, 241));
-  border-radius: 60px 60px;
-  width: 300px; /* Adjust the width as needed */
+  border-radius: 40px 10px 40px 10px;
+  min-width: 500px; /* Adjust the width as needed */
   height: 200px; /* Adjust the height as needed */
   object-fit: cover;
-  display: inline-block;
+  min-width: auto;
 }
 img:hover{
   box-shadow: 0 0 30px 10px rgba(13, 153, 241, 0.9); /* Adjust the color and other parameters for the hover effect */
@@ -28,7 +32,7 @@ img:hover{
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: auto;
+  width: 80%;
   padding: 20px;
   border-radius: 20px;
   position: relative;
@@ -98,6 +102,7 @@ img:hover{
   gap: 10px;
 }
 
+
 .form label {
   position: relative;
   width: 100%;
@@ -108,7 +113,7 @@ img:hover{
   color: #fff;
   width: 100%;
   height: 30px;
-  padding: 20px 0px 05px 0px;
+  padding: 20px 0px 5px 3px;
   outline: 0;
   border: 1px solid rgba(92, 166, 203, 0.397);
   border-radius: 10px;

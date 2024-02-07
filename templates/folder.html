@@ -1,0 +1,56 @@
+{% extends 'bbody.html' %}
+
+{% block content %}
+
+
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong> 
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+
+  
+    <h1>Create New Folder:</h1>
+    <form method="POST" action="{{ url_for('folder', id=id) }}">
+
+        {{ form.hidden_tag() }}
+        {{ form.name.label }}
+        {{ form.name(class_="form-control", placeholder="Folder Name") }}
+        <br/>
+        {{ form.submit(class_="btn btn-info") }}
+    </form>
+        
+        
+    <h1>FOLDER LIST:</h1>
+    <br/>
+    <div class='table-container'>
+        <table class="table table-hover table-bordered table-striped">
+            {% for folder in user_folders %}
+            <tr>
+                <td>
+                    <i class="fas fa-folder fa-2x"></i>
+                    {{ folder.name }} <!-- Display folder name --><br>
+                    <a href="{{ url_for('updatefold', id=folder.id) }}" class="btn btn-outline-warning">update</a>
+                    <a href="{{ url_for('deletefold', id=folder.id) }}" class="btn btn-outline-danger">delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+      
+    <style>
+        table td{
+            border-radius:10px;
+            border:none;
+            box-shadow: 
+            0 5px 15px 1px #0b1515,
+            0 1px 15px 1px #18bacd,
+            0 1px 15px 1px #2154d3;
+        }
+        .fas{
+            color:rgba(36, 176, 246, 0.95) ;
+          }
+         
+    </style>
+{% endblock %}

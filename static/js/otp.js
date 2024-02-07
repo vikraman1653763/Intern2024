@@ -83,6 +83,8 @@ function verifyOTP() {
             alert('savedd'); 
             // Call sendUserData with user details
             sendUserData(emailValue, usernameValue, lastnameValue, passwordValue);
+            window.location.href = 'login';
+
         } else {
             alert("Invalid OTP");
         }
